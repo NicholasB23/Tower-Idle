@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="64" height="64" fill="gray"/>
+    <!-- Top part of T -->
+    <rect x="8" y="8" width="48" height="12" fill="cyan"/>
+    <rect x="14" y="20" width="36" height="6" fill="cyan"/>
+    <!-- Vertical part of T -->
+    <rect x="26" y="26" width="12" height="30" fill="cyan"/>
+    <rect x="20" y="32" width="24" height="6" fill="cyan"/>
+</svg>
