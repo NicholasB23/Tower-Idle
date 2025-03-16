@@ -1,5 +1,6 @@
 import { FarmState } from "./farm.types";
 import { TowerState } from "./tower.types";
+import { PickaxeState } from "./mine.types";
 
 export interface GameState {
     points: number;
@@ -9,7 +10,8 @@ export interface GameState {
     tower: TowerState;
     resources: ResourceState;
     production: ProductionState;
-    farm: FarmState
+    farm: FarmState;
+    pickaxe: PickaxeState;
 }
 
 export interface Multiplier {

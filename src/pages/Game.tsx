@@ -71,7 +71,7 @@ const Game = () => {
                     </div>
 
                     <Card className="h-[calc(100%-150px)]"> {/* Adjust height to account for ResourceBar */}
-                        <CardContent className="p-6">
+                        <CardContent className="p-6 h-full">
                             {activeTab === 'workers' && <WorkersTab />}
                             {activeTab === 'farms' && <FarmsTab />}
                             {activeTab === 'mines' && <MinesTab />}

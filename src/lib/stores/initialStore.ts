@@ -1,6 +1,7 @@
 import { GameState, ProductionState, ResourceState } from '@/types/game.types'
 import { FarmState } from '@/types/farm.types'
 import { TowerState } from '@/types/tower.types';
+import { PICKAXE_UPGRADES } from '@/types/mine.types';
 
 
 const INITIAL_TOWER_STATE: TowerState = {
@@ -51,5 +52,6 @@ export const INITIAL_STATE: GameState = {
     tower: INITIAL_TOWER_STATE,
     resources: INITIAL_RESOURCE_STATE,
     production: INITIAL_PRODUCTION_STATE,
-    farm: INITIAL_FARM_STATE
+    farm: INITIAL_FARM_STATE,
+    pickaxe: PICKAXE_UPGRADES[0]
 };

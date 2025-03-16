@@ -25,6 +25,7 @@ stats.html
 .tmp
 
 # Editor directories and files
+*repomix-output.txt
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json.example

@@ -9,14 +9,20 @@ export interface FarmStore {
 }
 
 export const createFarmStore = (_get: any, set: any): FarmStore => ({
-    unlockFarmTile: (tileId: number) => set((state: any) => ({
-        farm: {
-            ...state.farm,
-            tiles: state.farm.tiles.map((tile: any) =>
-                tile.id === tileId ? { ...tile, unlocked: true } : tile
-            )
-        }
-    })),
+    unlockFarmTile: (tileId: number) => set((state: any) => {
+        const tile = state.farm.tiles.find((t: any) => t.id === tileId);
+        if (!tile || tile.unlocked || state.points < tile.cost) return state;
+
+        return {
+            points: state.points - tile.cost,
+            farm: {
+                ...state.farm,
+                tiles: state.farm.tiles.map((t: any) =>
+                    t.id === tileId ? { ...tile, unlocked: true } : t
+                )
+            }
+        };
+    }),
 
     plantCrop: (tileId: number, crop: CropType) => set((state: any) => ({
         points: state.points - CROP_DETAILS[crop].cost,
