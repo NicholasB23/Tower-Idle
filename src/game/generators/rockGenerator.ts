@@ -134,14 +134,12 @@ export function generateRocks(
 }
 
 // Helper function to calculate resource yield from a rock
-export function calculateResourceYield(resources: ResourceYield[]): Record<string, number> {
+export function calculateResourceYield(resources: ResourceYield[], multiplier: number = 1): Record<string, number> {
     const result: Record<string, number> = {};
 
     resources.forEach(resource => {
-        // Calculate a random value between min and max
-        const amount = Math.floor(
-            resource.min + Math.random() * (resource.max - resource.min + 1)
-        );
+        // Use fixed amount with multiplier
+        const amount = Math.floor(resource.amount * multiplier);
 
         if (amount > 0) {
             result[resource.type] = amount;
@@ -152,22 +150,20 @@ export function calculateResourceYield(resources: ResourceYield[]): Record<strin
 }
 
 // New function to calculate currency yield from crystal rocks
-export function calculateCurrencyYield(resources: ResourceYield[]): number {
+export function calculateCurrencyYield(resources: ResourceYield[], multiplier: number = 1): number {
     let currencyAmount = 0;
 
     resources.forEach(resource => {
-        // Convert resource yields to currency
-        const baseAmount = Math.floor(
-            resource.min + Math.random() * (resource.max - resource.min + 1)
-        );
+        // Use fixed amount with multiplier
+        const amount = Math.floor(resource.amount * multiplier);
 
         // Calculate currency based on resource type
         if (resource.type === 'stone') {
-            currencyAmount += baseAmount * 2;
+            currencyAmount += amount * 2;
         } else if (resource.type === 'metal') {
-            currencyAmount += baseAmount * 5;
+            currencyAmount += amount * 5;
         } else if (resource.type === 'wood') {
-            currencyAmount += baseAmount * 1;
+            currencyAmount += amount * 1;
         }
     });
 

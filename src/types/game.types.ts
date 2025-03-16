@@ -12,6 +12,10 @@ export interface GameState {
     production: ProductionState;
     farm: FarmState;
     pickaxe: PickaxeState;
+    miningUpgrades: {
+        yieldMultiplier: number;
+        purchased: number[];
+    };
 }
 
 export interface Multiplier {

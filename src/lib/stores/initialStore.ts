@@ -53,5 +53,9 @@ export const INITIAL_STATE: GameState = {
     resources: INITIAL_RESOURCE_STATE,
     production: INITIAL_PRODUCTION_STATE,
     farm: INITIAL_FARM_STATE,
-    pickaxe: PICKAXE_UPGRADES[0]
+    pickaxe: PICKAXE_UPGRADES[0],
+    miningUpgrades: {
+        yieldMultiplier: 1,
+        purchased: []
+    }
 };

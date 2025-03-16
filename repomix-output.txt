@@ -59,6 +59,8 @@ src/App.tsx
 src/assets/icons/pickaxe.svg
 src/assets/react.svg
 src/components/MineArea.tsx
+src/components/mines/MineShop.tsx
+src/components/mines/MineYieldUpgrade.tsx
 src/components/mines/RockComponent.tsx
 src/components/ResourceBar.tsx
 src/components/SaveManager.tsx
@@ -134,7 +136,7 @@ stats.html
 .tmp
 
 # Editor directories and files
-repomix-output.txt
+*repomix-output.txt
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json.example
@@ -458,7 +460,7 @@ const MineArea = () => {
     const [rocks, setRocks] = useState<Rock[]>([]);
     const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
     const mineAreaRef = useRef<HTMLDivElement>(null);
-    const { addResource, addPoints, pickaxe, tower } = useGameStore();
+    const { addResource, addPoints, miningUpgrades, pickaxe, tower } = useGameStore();
 
     // Custom pickaxe cursor
     const cursorUrl = 'src/assets/icons/pickaxe.svg';
@@ -508,16 +510,19 @@ const MineArea = () => {
 
                 // Rock is depleted
                 if (newHealth <= 0) {
+                    // Get the yield multiplier from state
+                    const yieldMultiplier = miningUpgrades?.yieldMultiplier || 1;
+
                     // Check if it's a crystal rock
                     if (rock.rockType === RockType.CRYSTAL) {
                         // Calculate currency to add based on the crystal's resources
-                        const currencyAmount = calculateCurrencyYield(rock.resources);
+                        const currencyAmount = calculateCurrencyYield(rock.resources, yieldMultiplier);
                         if (currencyAmount > 0) {
                             addPoints(currencyAmount);
                         }
                     } else {
                         // Handle regular rocks as before - add resources
-                        const resources = calculateResourceYield(rock.resources);
+                        const resources = calculateResourceYield(rock.resources, yieldMultiplier);
                         Object.entries(resources).forEach(([type, amount]) => {
                             addResource(type as 'stone' | 'metal' | 'wood', amount);
                         });
@@ -561,6 +566,191 @@ const MineArea = () => {
 }
 
 export default MineArea;
+
+================
+File: src/components/mines/MineShop.tsx
+================
+// src/components/mines/MineShop.tsx
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Pickaxe, ShoppingCart, HardHat } from 'lucide-react';
+import { useGameStore } from '@/lib/store';
+import { PICKAXE_UPGRADES } from '@/types/mine.types';
+import MineYieldUpgrades from './MineYieldUpgrade';
+
+const MineShop = () => {
+    const [open, setOpen] = useState(false);
+    const { pickaxe, upgradePickaxe, canUpgradePickaxe, points } = useGameStore();
+
+    // Find the next pickaxe upgrade
+    const nextPickaxe = PICKAXE_UPGRADES.find(p => p.level === pickaxe.level + 1);
+
+    const handleUpgrade = () => {
+        upgradePickaxe();
+        // Keep the dialog open to allow multiple purchases
+    };
+
+    return (
+        <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                    <ShoppingCart className="h-4 w-4" />
+                    Shop
+                </Button>
+            </SheetTrigger>
+
+            <SheetContent className="sm:max-w-md">
+                <SheetHeader>
+                    <SheetTitle className="text-center">Mine Shop</SheetTitle>
+                </SheetHeader>
+
+                <div className="grid gap-4 py-4">
+                    <h3 className="font-semibold text-lg mb-2">Upgrades</h3>
+
+                    <Card className={!canUpgradePickaxe() ? "opacity-70" : ""}>
+                        <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-2">
+                                    <Pickaxe className="h-6 w-6" />
+                                    <div>
+                                        <h4 className="font-semibold">Pickaxe Upgrade</h4>
+                                        <p className="text-sm text-accent-foreground">
+                                            Level {pickaxe.level} → {nextPickaxe?.level || 'MAX'}
+                                        </p>
+                                        {nextPickaxe && (
+                                            <p className="text-xs text-green-700">
+                                                +{nextPickaxe.power - pickaxe.power} damage
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="text-right">
+                                    {nextPickaxe ? (
+                                        <>
+                                            <div className="text-sm font-medium mb-1">
+                                                Cost: {nextPickaxe.cost} coins
+                                            </div>
+                                            <Button
+                                                size="sm"
+                                                onClick={handleUpgrade}
+                                                disabled={!canUpgradePickaxe()}
+                                            >
+                                                {points >= nextPickaxe.cost ? 'Upgrade' : 'Not enough coins'}
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <div className="text-sm font-medium">Maximum Level</div>
+                                    )}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <MineYieldUpgrades />
+                    {/* <Card className="opacity-50">
+                        <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-2">
+                                    <HardHat className="h-6 w-6" />
+                                    <div>
+                                        <h4 className="font-semibold">Auto Miner</h4>
+                                        <p className="text-sm text-muted-foreground">
+                                            Mines automatically
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="text-right">
+                                    <div className="text-sm font-medium mb-1">
+                                        Coming soon!
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card> */}
+                </div>
+            </SheetContent>
+        </Sheet>
+    );
+};
+
+export default MineShop;
+
+================
+File: src/components/mines/MineYieldUpgrade.tsx
+================
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { TrendingUp } from 'lucide-react';
+import { useGameStore } from '@/lib/store';
+import { YieldUpgrade } from '@/types/mine.types';
+
+const MineYieldUpgrades: React.FC = () => {
+    const { miningUpgrades, points, purchaseYieldUpgrade, canPurchaseYieldUpgrade, getAvailableYieldUpgrades } = useGameStore();
+
+    // Get available upgrades
+    const availableUpgrades = getAvailableYieldUpgrades();
+
+    return (
+        <div className="space-y-4">
+            <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Resource Yield Upgrades</h3>
+                <div className="text-sm text-green-600 font-medium">
+                    Current Multiplier: {miningUpgrades?.yieldMultiplier.toFixed(2)}x
+                </div>
+            </div>
+
+            {availableUpgrades.length > 0 ? (
+                <div className="grid gap-3">
+                    {availableUpgrades.map((upgrade) => (
+                        <Card key={upgrade.id} className={!canPurchaseYieldUpgrade(upgrade.id) ? "opacity-70" : ""}>
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center gap-2">
+                                        <TrendingUp className="h-6 w-6 text-green-600" />
+                                        <div>
+                                            <h4 className="font-semibold">{upgrade.name}</h4>
+                                            <p className="text-sm text-accent-foreground">
+                                                {upgrade.description}
+                                            </p>
+                                            <p className="text-xs text-green-700">
+                                                +{((upgrade.multiplier - 1) * 100).toFixed(0)}% resource yield
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-right">
+                                        <div className="text-sm font-medium mb-1">
+                                            Cost: {upgrade.cost} coins
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            onClick={() => purchaseYieldUpgrade(upgrade.id)}
+                                            disabled={!canPurchaseYieldUpgrade(upgrade.id)}
+                                        >
+                                            {points >= upgrade.cost ? 'Purchase' : 'Not enough coins'}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <Card>
+                    <CardContent className="p-4 text-center">
+                        <p className="text-muted-foreground">All upgrades purchased!</p>
+                    </CardContent>
+                </Card>
+            )}
+        </div>
+    );
+};
+
+export default MineYieldUpgrades;
 
 ================
 File: src/components/mines/RockComponent.tsx
@@ -960,21 +1150,12 @@ export default FarmsTab;
 ================
 File: src/components/tabs/MinesTab.tsx
 ================
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Pickaxe } from 'lucide-react';
 import { useGameStore } from '@/lib/store';
 import MineArea from '../MineArea';
+import MineShop from '../mines/MineShop';
 
 const MinesTab = () => {
-    const {
-        pickaxe,
-        upgradePickaxe,
-        canUpgradePickaxe,
-        getNextPickaxeUpgrade
-    } = useGameStore();
-
-    const nextUpgrade = getNextPickaxeUpgrade();
+    const { pickaxe, miningUpgrades } = useGameStore();
 
     return (
         <div className='flex flex-col h-full'>
@@ -982,32 +1163,18 @@ const MinesTab = () => {
                 <h2 className="text-2xl font-bold">Mines</h2>
                 <div className="flex gap-2 items-center">
                     <div className="text-sm text-muted-foreground mr-2">
+                        Resource Yield: {(miningUpgrades?.yieldMultiplier || 1).toFixed(2)}x
+                    </div>
+                    <div className="text-sm text-muted-foreground mr-2">
+                        Respawn Rate: 5secs
+                    </div>
+                    <div className="text-sm text-muted-foreground mr-2">
                         Level {pickaxe.level} Pickaxe • {pickaxe.power} damage
                     </div>
-                    <Button
-                        variant="outline"
-                        className="gap-2"
-                        onClick={upgradePickaxe}
-                        disabled={!canUpgradePickaxe()}
-                    >
-                        <Pickaxe className="h-4 w-4" />
-                        {nextUpgrade
-                            ? `Upgrade (${nextUpgrade.cost} coins)`
-                            : "Max Level"}
-                    </Button>
+                    <MineShop />
                 </div>
             </div>
-
             <MineArea />
-
-            <div className="space-y-4">
-                <Card className="bg-muted/30 border-dashed">
-                    <CardContent className="p-4 text-center text-muted-foreground">
-                        <h3 className="font-semibold mb-2">Mining Upgrades Coming Soon</h3>
-                        <p className="text-sm">Hire and upgrade miners in the workers tab to automate stone production</p>
-                    </CardContent>
-                </Card>
-            </div>
         </div>
     );
 };
@@ -1862,14 +2029,16 @@ export function generateRocks(
 }
 
 // Helper function to calculate resource yield from a rock
-export function calculateResourceYield(resources: ResourceYield[]): Record<string, number> {
+export function calculateResourceYield(resources: ResourceYield[], multiplier: number = 1): Record<string, number> {
     const result: Record<string, number> = {};
 
     resources.forEach(resource => {
-        // Calculate a random value between min and max
-        const amount = Math.floor(
+        // Calculate a random value between min and max, then apply the multiplier
+        const baseAmount = Math.floor(
             resource.min + Math.random() * (resource.max - resource.min + 1)
         );
+
+        const amount = Math.floor(baseAmount * multiplier);
 
         if (amount > 0) {
             result[resource.type] = amount;
@@ -1880,7 +2049,7 @@ export function calculateResourceYield(resources: ResourceYield[]): Record<strin
 }
 
 // New function to calculate currency yield from crystal rocks
-export function calculateCurrencyYield(resources: ResourceYield[]): number {
+export function calculateCurrencyYield(resources: ResourceYield[], multiplier: number = 1): number {
     let currencyAmount = 0;
 
     resources.forEach(resource => {
@@ -1889,13 +2058,16 @@ export function calculateCurrencyYield(resources: ResourceYield[]): number {
             resource.min + Math.random() * (resource.max - resource.min + 1)
         );
 
+        // Apply multiplier to the base amount
+        const amount = Math.floor(baseAmount * multiplier);
+
         // Calculate currency based on resource type
         if (resource.type === 'stone') {
-            currencyAmount += baseAmount * 2;
+            currencyAmount += amount * 2;
         } else if (resource.type === 'metal') {
-            currencyAmount += baseAmount * 5;
+            currencyAmount += amount * 5;
         } else if (resource.type === 'wood') {
-            currencyAmount += baseAmount * 1;
+            currencyAmount += amount * 1;
         }
     });
 
@@ -2166,7 +2338,7 @@ File: src/lib/stores/farmStore.ts
 import { CropType, CROP_DETAILS } from '@/types/farm.types'
 
 export interface FarmStore {
-    unlockFarmTile: (tileId: number, tileCost: number) => void;
+    unlockFarmTile: (tileId: number) => void;
     plantCrop: (tileId: number, crop: CropType) => void;
     harvestCrop: (tileId: number) => void;
     setPlantingMode: (isPlanting: boolean, selectedCrop?: CropType | null) => void;
@@ -2174,14 +2346,20 @@ export interface FarmStore {
 }
 
 export const createFarmStore = (_get: any, set: any): FarmStore => ({
-    unlockFarmTile: (tileId: number, tileCost: number) => set((state: any) => ({
-        farm: {
-            ...state.farm,
-            tiles: state.farm.tiles.map((tile: any) =>
-                tile.id === tileId ? { ...tile, unlocked: true } : tile
-            )
-        }
-    })),
+    unlockFarmTile: (tileId: number) => set((state: any) => {
+        const tile = state.farm.tiles.find((t: any) => t.id === tileId);
+        if (!tile || tile.unlocked || state.points < tile.cost) return state;
+
+        return {
+            points: state.points - tile.cost,
+            farm: {
+                ...state.farm,
+                tiles: state.farm.tiles.map((t: any) =>
+                    t.id === tileId ? { ...tile, unlocked: true } : t
+                )
+            }
+        };
+    }),
 
     plantCrop: (tileId: number, crop: CropType) => set((state: any) => ({
         points: state.points - CROP_DETAILS[crop].cost,
@@ -2363,18 +2541,27 @@ export const INITIAL_STATE: GameState = {
     resources: INITIAL_RESOURCE_STATE,
     production: INITIAL_PRODUCTION_STATE,
     farm: INITIAL_FARM_STATE,
-    pickaxe: PICKAXE_UPGRADES[0]
+    pickaxe: PICKAXE_UPGRADES[0],
+    miningUpgrades: {
+        yieldMultiplier: 1,
+        purchased: []
+    }
 };
 
 ================
 File: src/lib/stores/miningStore.ts
 ================
-import { PICKAXE_UPGRADES } from '@/types/mine.types';
+import { PICKAXE_UPGRADES, YIELD_UPGRADES, YieldUpgrade } from '@/types/mine.types';
 
 export interface MiningStore {
     upgradePickaxe: () => void;
     canUpgradePickaxe: () => boolean;
     getNextPickaxeUpgrade: () => { level: number; power: number; cost: number } | null;
+
+    // New functions for yield upgrades
+    purchaseYieldUpgrade: (upgradeId: number) => void;
+    canPurchaseYieldUpgrade: (upgradeId: number) => boolean;
+    getAvailableYieldUpgrades: () => YieldUpgrade[];
 }
 
 export const createMiningStore = (get: any, set: any): MiningStore => ({
@@ -2405,6 +2592,50 @@ export const createMiningStore = (get: any, set: any): MiningStore => ({
         const state = get();
         const currentPickaxe = state.pickaxe;
         return PICKAXE_UPGRADES.find(p => p.level === currentPickaxe.level + 1) || null;
+    },
+
+    purchaseYieldUpgrade: (upgradeId: number) => set((state: any) => {
+        // Find the upgrade
+        const upgrade = YIELD_UPGRADES.find(u => u.id === upgradeId);
+
+        // Check if it exists and can be purchased
+        if (!upgrade || state.points < upgrade.cost || state.miningUpgrades?.purchased.includes(upgradeId)) {
+            return state;
+        }
+
+        // Calculate new yield multiplier
+        const newMultiplier = state.miningUpgrades?.yieldMultiplier
+            ? state.miningUpgrades.yieldMultiplier * upgrade.multiplier
+            : upgrade.multiplier;
+
+        // Update state
+        return {
+            points: state.points - upgrade.cost,
+            miningUpgrades: {
+                ...state.miningUpgrades || { yieldMultiplier: 1, purchased: [] },
+                yieldMultiplier: newMultiplier,
+                purchased: [...(state.miningUpgrades?.purchased || []), upgradeId]
+            }
+        };
+    }),
+
+    canPurchaseYieldUpgrade: (upgradeId: number) => {
+        const state = get();
+        const upgrade = YIELD_UPGRADES.find(u => u.id === upgradeId);
+
+        return !!upgrade &&
+            state.points >= upgrade.cost &&
+            !(state.miningUpgrades?.purchased || []).includes(upgradeId);
+    },
+
+    getAvailableYieldUpgrades: () => {
+        const state = get();
+        const purchasedUpgrades = state.miningUpgrades?.purchased || [];
+
+        // Filter out purchased upgrades and sort by cost
+        return YIELD_UPGRADES
+            .filter(upgrade => !purchasedUpgrades.includes(upgrade.id))
+            .sort((a, b) => a.cost - b.cost);
     }
 });
 
@@ -2700,6 +2931,10 @@ export interface GameState {
     production: ProductionState;
     farm: FarmState;
     pickaxe: PickaxeState;
+    miningUpgrades: {
+        yieldMultiplier: number;
+        purchased: number[];
+    };
 }
 
 export interface Multiplier {
@@ -2758,6 +2993,62 @@ export interface RockTypeConfig {
     fillColor: string;
     resources: ResourceYield[];
 }
+
+export interface YieldUpgrade {
+    id: number;
+    name: string;
+    description: string;
+    cost: number;
+    multiplier: number;
+}
+
+export interface MiningState {
+    pickaxe: PickaxeState;
+    yieldMultiplier: number;
+    upgrades: {
+        yield: YieldUpgrade[];
+        purchased: number[];
+    };
+}
+
+export const YIELD_UPGRADES: YieldUpgrade[] = [
+    {
+        id: 1,
+        name: "Basic Extraction",
+        description: "Improves resource extraction techniques",
+        cost: 150,
+        multiplier: 1.25
+    },
+    {
+        id: 2,
+        name: "Efficient Mining",
+        description: "More efficient resource collection",
+        cost: 500,
+        multiplier: 1.5
+    },
+    {
+        id: 3,
+        name: "Advanced Techniques",
+        description: "Advanced mining techniques for better yields",
+        cost: 1500,
+        multiplier: 1.75
+    },
+    {
+        id: 4,
+        name: "Resource Maximizer",
+        description: "Maximize resource extraction from every rock",
+        cost: 5000,
+        multiplier: 2.0
+    },
+    {
+        id: 5,
+        name: "Crystal Resonance",
+        description: "Enhance crystal value through resonance techniques",
+        cost: 15000,
+        multiplier: 2.5
+    }
+];
+
 
 export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
     [RockType.NORMAL]: {

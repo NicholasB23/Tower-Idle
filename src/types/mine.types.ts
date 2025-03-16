@@ -5,9 +5,8 @@ export interface PickaxeState {
 }
 
 export type ResourceYield = {
-    type: 'stone' | 'metal' | 'wood'; // Adding wood for potential future expansion
-    min: number;
-    max: number;
+    type: 'stone' | 'metal' | 'wood';
+    amount: number;
 }
 
 export enum RockType {
@@ -28,6 +27,62 @@ export interface RockTypeConfig {
     resources: ResourceYield[];
 }
 
+export interface YieldUpgrade {
+    id: number;
+    name: string;
+    description: string;
+    cost: number;
+    multiplier: number;
+}
+
+export interface MiningState {
+    pickaxe: PickaxeState;
+    yieldMultiplier: number;
+    upgrades: {
+        yield: YieldUpgrade[];
+        purchased: number[];
+    };
+}
+
+export const YIELD_UPGRADES: YieldUpgrade[] = [
+    {
+        id: 1,
+        name: "Basic Extraction",
+        description: "Improves resource extraction techniques",
+        cost: 150,
+        multiplier: 1.25
+    },
+    {
+        id: 2,
+        name: "Efficient Mining",
+        description: "More efficient resource collection",
+        cost: 500,
+        multiplier: 1.5
+    },
+    {
+        id: 3,
+        name: "Advanced Techniques",
+        description: "Advanced mining techniques for better yields",
+        cost: 1500,
+        multiplier: 1.75
+    },
+    {
+        id: 4,
+        name: "Resource Maximizer",
+        description: "Maximize resource extraction from every rock",
+        cost: 5000,
+        multiplier: 2.0
+    },
+    {
+        id: 5,
+        name: "Crystal Resonance",
+        description: "Enhance crystal value through resonance techniques",
+        cost: 15000,
+        multiplier: 2.5
+    }
+];
+
+
 export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
     [RockType.NORMAL]: {
         type: RockType.NORMAL,
@@ -36,7 +91,7 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         color: 'black',
         fillColor: 'gray',
         resources: [
-            { type: 'stone', min: 1, max: 3 }
+            { type: 'stone', amount: 2 }
         ]
     },
     [RockType.HARD]: {
@@ -46,7 +101,7 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         color: 'black',
         fillColor: '#555555',
         resources: [
-            { type: 'stone', min: 3, max: 5 }
+            { type: 'stone', amount: 4 }
         ]
     },
     [RockType.GRANITE]: {
@@ -56,8 +111,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         color: 'black',
         fillColor: '#7E6D5A',
         resources: [
-            { type: 'stone', min: 4, max: 8 },
-            { type: 'metal', min: 0, max: 1 }
+            { type: 'stone', amount: 6 },
+            { type: 'metal', amount: 1 }
         ]
     },
     [RockType.CRYSTAL]: {
@@ -67,8 +122,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         color: '#4A6F8A',
         fillColor: '#8ACDEB',
         resources: [
-            { type: 'stone', min: 3, max: 6 },
-            { type: 'metal', min: 1, max: 2 }
+            { type: 'stone', amount: 4 },
+            { type: 'metal', amount: 2 }
         ]
     },
     [RockType.GEODE]: {
@@ -78,8 +133,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         color: '#333333',
         fillColor: '#6B4F7E',
         resources: [
-            { type: 'stone', min: 2, max: 4 },
-            { type: 'metal', min: 2, max: 4 }
+            { type: 'stone', amount: 3 },
+            { type: 'metal', amount: 3 }
         ]
     },
     [RockType.METEORITE]: {
@@ -89,8 +144,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         color: 'black',
         fillColor: '#2C2C54',
         resources: [
-            { type: 'stone', min: 5, max: 10 },
-            { type: 'metal', min: 3, max: 8 }
+            { type: 'stone', amount: 8 },
+            { type: 'metal', amount: 5 }
         ]
     }
 };

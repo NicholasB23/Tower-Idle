@@ -9,7 +9,7 @@ const MineArea = () => {
     const [rocks, setRocks] = useState<Rock[]>([]);
     const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
     const mineAreaRef = useRef<HTMLDivElement>(null);
-    const { addResource, addPoints, pickaxe, tower } = useGameStore();
+    const { addResource, addPoints, miningUpgrades, pickaxe, tower } = useGameStore();
 
     // Custom pickaxe cursor
     const cursorUrl = 'src/assets/icons/pickaxe.svg';
@@ -59,16 +59,19 @@ const MineArea = () => {
 
                 // Rock is depleted
                 if (newHealth <= 0) {
+                    // Get the yield multiplier from state
+                    const yieldMultiplier = miningUpgrades?.yieldMultiplier || 1;
+
                     // Check if it's a crystal rock
                     if (rock.rockType === RockType.CRYSTAL) {
                         // Calculate currency to add based on the crystal's resources
-                        const currencyAmount = calculateCurrencyYield(rock.resources);
+                        const currencyAmount = calculateCurrencyYield(rock.resources, yieldMultiplier);
                         if (currencyAmount > 0) {
                             addPoints(currencyAmount);
                         }
                     } else {
                         // Handle regular rocks as before - add resources
-                        const resources = calculateResourceYield(rock.resources);
+                        const resources = calculateResourceYield(rock.resources, yieldMultiplier);
                         Object.entries(resources).forEach(([type, amount]) => {
                             addResource(type as 'stone' | 'metal' | 'wood', amount);
                         });
