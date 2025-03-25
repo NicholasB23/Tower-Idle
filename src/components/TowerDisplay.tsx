@@ -20,9 +20,6 @@ const TowerDisplay = ({ tower }: TowerDisplayProps) => {
                         <div className="text-2xl font-bold">{
                             tower.height > 100 ? Math.floor(tower.height) : tower.height.toFixed(1)
                         }m</div>
-                        <div className="text-sm text-muted-foreground">
-                            +{tower.heightPerMinute}m/min
-                        </div>
                     </div>
                 </div>
             </CardContent>

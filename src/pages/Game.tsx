@@ -6,9 +6,9 @@ import WorkersTab from '@/components/tabs/WorkersTab';
 import FarmsTab from '@/components/tabs/FarmsTab';
 import MinesTab from '@/components/tabs/MinesTab';
 import SettingsTab from '@/components/tabs/SettingsTab';
-import TowerDisplay from '@/components/TowerDisplay';
 import ResourceBar from '@/components/ResourceBar'; // Import the ResourceBar component
 import { useGameStore } from '@/lib/store';
+import TowerDisplay from '@/components/TowerDisplay';
 
 const Game = () => {
     const [activeTab, setActiveTab] = React.useState('workers');
