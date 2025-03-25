@@ -76,7 +76,7 @@ export const createSettingsStore = (get: any, set: any): SettingsStore => ({
 
     getAutoSaveIntervals: () => AUTO_SAVE_INTERVALS,
 
-    resetSettings: () => set((state: any) => ({
+    resetSettings: () => set(() => ({
         settings: DEFAULT_SETTINGS
     }))
 });

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Volume2, Bell, Save, Trash2, Music } from 'lucide-react';
+import { Volume2, Bell, Trash2, Music } from 'lucide-react';
 import SaveManager from '../SaveManager';
 import { GameState } from '@/types/game.types';
 import { useGameStore } from '@/lib/store';
@@ -17,7 +17,6 @@ interface SettingsTabProps {
 const SettingsTab: React.FC<SettingsTabProps> = ({ gameState, onLoadSave }) => {
     const {
         settings,
-        updateSetting,
         toggleSound,
         toggleNotifications,
         setAutoSaveInterval,
