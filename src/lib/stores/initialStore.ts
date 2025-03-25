@@ -2,6 +2,7 @@ import { GameState, ProductionState, ResourceState } from '@/types/game.types'
 import { FarmState } from '@/types/farm.types'
 import { TowerState, TowerAge, calculateResourceCost } from '@/types/tower.types';
 import { PICKAXE_UPGRADES } from '@/types/mine.types';
+import { GameSettings } from '@/types/settings.types';
 
 const initialHeight = 990;
 
@@ -49,6 +50,15 @@ const INITIAL_FARM_STATE: FarmState = {
     }
 };
 
+const INITIAL_SETTINGS_STATE: GameSettings = {
+    autoSaveInterval: 60, // in seconds
+    masterLevel: 100,
+    musicLevel: 50,
+    sfxLevel: 50,
+    soundEnabled: true,
+    notificationsEnabled: true
+}
+
 export const INITIAL_STATE: GameState = {
     points: 0,
     clickPower: 1,
@@ -62,5 +72,6 @@ export const INITIAL_STATE: GameState = {
     miningUpgrades: {
         yieldMultiplier: 1,
         purchased: []
-    }
+    },
+    settings: INITIAL_SETTINGS_STATE
 };

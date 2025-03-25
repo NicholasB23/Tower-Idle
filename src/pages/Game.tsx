@@ -9,6 +9,7 @@ import SettingsTab from '@/components/tabs/SettingsTab';
 import ResourceBar from '@/components/ResourceBar'; // Import the ResourceBar component
 import { useGameStore } from '@/lib/store';
 import TowerDisplay from '@/components/TowerDisplay';
+import { Toaster } from '@/components/ui/toaster';
 
 const Game = () => {
     const [activeTab, setActiveTab] = React.useState('workers');
@@ -84,6 +85,7 @@ const Game = () => {
                     </Card>
                 </div>
             </div>
+            <Toaster />
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import { FarmState } from "./farm.types";
 import { TowerState } from "./tower.types";
 import { PickaxeState } from "./mine.types";
+import { GameSettings } from "./settings.types";
 
 export interface GameState {
     points: number;
@@ -16,7 +17,9 @@ export interface GameState {
         yieldMultiplier: number;
         purchased: number[];
     };
+    settings: GameSettings;
 }
+
 
 export interface Multiplier {
     id: number;

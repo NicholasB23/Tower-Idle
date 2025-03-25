@@ -5,6 +5,7 @@ import { createTowerStore, TowerStore } from './stores/towerStore'
 import { createResourceStore, ResourceStore } from './stores/resourceStore'
 import { createGameLoopStore, GameLoopStore } from './stores/gameLoopStore'
 import { createMiningStore, MiningStore } from './stores/miningStore'
+import { createSettingsStore, SettingsStore } from './stores/settingsStore'
 import { saveManager } from './saveManager'
 import { INITIAL_STATE } from './stores/initialStore'
 import { GameState } from '@/types/game.types'
@@ -15,7 +16,7 @@ export interface SaveActions {
     save: () => void;
     load: () => void;
     loadFromFile: (saveFile: GameState) => void;
-    startNewGame: () => void; // New method for starting a fresh game
+    startNewGame: () => void;
 }
 
 export interface BasicActions {
@@ -29,6 +30,7 @@ export type GameStore = GameState &
     ResourceStore &
     GameLoopStore &
     MiningStore &
+    SettingsStore &
     SaveActions &
     BasicActions;
 
@@ -39,6 +41,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     ...createResourceStore(get, set),
     ...createGameLoopStore(get, set),
     ...createMiningStore(get, set),
+    ...createSettingsStore(get, set),
 
     // Save management
     save: () => {
@@ -109,7 +112,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
             miningUpgrades: {
                 yieldMultiplier: INITIAL_STATE.miningUpgrades.yieldMultiplier,
                 purchased: [...INITIAL_STATE.miningUpgrades.purchased]
-            }
+            },
+
+            // Settings (preserve current settings or reset to default if specified)
+            settings: { ...INITIAL_STATE.settings }
         });
 
         // Start a fresh game loop
