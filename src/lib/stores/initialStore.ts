@@ -1,4 +1,3 @@
-// src/lib/stores/initialStore.ts
 import { GameState, ProductionState, ResourceState } from '@/types/game.types'
 import { FarmState } from '@/types/farm.types'
 import { TowerState, TowerAge, calculateResourceCost } from '@/types/tower.types';

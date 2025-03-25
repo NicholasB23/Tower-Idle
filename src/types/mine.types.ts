@@ -1,4 +1,3 @@
-// src/types/mine.types.ts
 export interface PickaxeState {
     level: number;
     power: number;

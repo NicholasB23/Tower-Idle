@@ -9,12 +9,14 @@ interface SaveState extends GameState {
         wood: number;
         stone: number;
         metal: number;
+        carbonFiber: number;
         workers: number;
     };
     production: {
         woodRate: number;
         stoneRate: number;
         metalRate: number;
+        carbonFiberRate: number;
     };
     lastSavedAt?: number;
 }

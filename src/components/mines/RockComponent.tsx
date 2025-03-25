@@ -1,4 +1,3 @@
-// src/components/mines/RockComponent.tsx
 import { Progress } from '@/components/ui/progress';
 import { Mountain, DollarSign, Atom } from 'lucide-react';
 import { Rock } from '@/game/generators/rockGenerator';

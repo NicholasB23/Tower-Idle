@@ -1,4 +1,3 @@
-// src/game/generators/rockGenerator.ts
 import { RockType, ROCK_TYPES, ResourceYield } from '@/types/mine.types';
 
 export interface Rock {
@@ -52,7 +51,6 @@ export function chooseRockType(towerHeight: number): RockType {
     }
 
     // Weight rock types based on rarity - rarer rocks at higher heights
-    const totalWeight = availableRockTypes.length;
     const weights = availableRockTypes.map((_, index) => index + 1);
     const totalWeightSum = weights.reduce((sum, weight) => sum + weight, 0);
 

@@ -1,5 +1,4 @@
-// src/lib/stores/towerStore.ts
-import { FloorType, Floor, TowerAge, calculateResourceCost, getAgeForHeight, ResourceCost } from '@/types/tower.types'
+import { FloorType, Floor, calculateResourceCost, getAgeForHeight, ResourceCost } from '@/types/tower.types'
 
 export interface TowerStore {
     addFloor: (type: FloorType) => void;

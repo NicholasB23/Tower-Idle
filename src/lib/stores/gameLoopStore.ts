@@ -1,4 +1,3 @@
-// src/lib/stores/gameLoopStore.ts
 import { createFarmStore } from './farmStore'
 import { createTowerStore } from './towerStore'
 import { createResourceStore } from './resourceStore'

@@ -1,4 +1,3 @@
-// src/lib/stores/resourceStore.ts
 import { ResourceType, ProductionType } from '@/types/game.types'
 
 export interface ResourceStore {
@@ -42,7 +41,6 @@ export const createResourceStore = (get: any, set: any): ResourceStore => ({
     },
 
     spendResources: (resources: Partial<Record<ResourceType, number>>) => {
-        const state = get();
         if (!get().hasResources(resources)) return false;
 
         set((state: any) => {

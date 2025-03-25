@@ -1,4 +1,3 @@
-// src/components/TowerDisplay.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Building2, ArrowUp } from 'lucide-react';

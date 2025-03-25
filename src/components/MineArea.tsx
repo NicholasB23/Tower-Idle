@@ -1,4 +1,3 @@
-// src/components/MineArea.tsx
 import { useEffect, useState, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Rock, generateRock, generateRocks, calculateResourceYield, calculateCurrencyYield } from '@/game/generators/rockGenerator'
