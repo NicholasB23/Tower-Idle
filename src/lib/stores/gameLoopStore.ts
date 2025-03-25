@@ -1,3 +1,4 @@
+// src/lib/stores/gameLoopStore.ts
 import { createFarmStore } from './farmStore'
 import { createTowerStore } from './towerStore'
 import { createResourceStore } from './resourceStore'
@@ -19,7 +20,10 @@ export const createGameLoopStore = (get: any, set: any) => {
             const resourceStore = createResourceStore(get, set);
 
             // Update all game systems
-            towerStore.updateTowerHeight();
+            if (get().tower.isBuilding) {
+                towerStore.updateBuildProgress();
+            }
+
             farmStore.updateFarmGrowth();
             resourceStore.updateResources();
 
@@ -28,7 +32,7 @@ export const createGameLoopStore = (get: any, set: any) => {
 
             // Update points
             set((state: any) => ({
-                points: state.points + floorIncome + state.autoClickPower
+                points: state.points + floorIncome / 60 + state.autoClickPower / 60 // Divide by 60 for per-second rate at 60fps
             }));
         },
 

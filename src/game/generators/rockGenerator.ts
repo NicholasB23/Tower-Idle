@@ -35,24 +35,40 @@ export function checkRockCollision(
     });
 }
 
-// Random crystal rock or choose rock based on tower height
+// Choose rock type based on tower height
 export function chooseRockType(towerHeight: number): RockType {
-    let chosenRock: RockType = RockType.NORMAL;
-
+    // Crystal rocks have a fixed chance at any height
     if (Math.random() < 0.1) {
-        chosenRock = RockType.CRYSTAL;
-    } else if (towerHeight <= 100) {
-        chosenRock = RockType.HARD;
-    } else if (towerHeight <= 1000) {
-        chosenRock = RockType.GRANITE;
-    } else if (towerHeight <= 10000) {
-        chosenRock = RockType.GEODE;
-    } else if (towerHeight <= 100000) {
-        chosenRock = RockType.METEORITE;
-    } else {
-        chosenRock = RockType.NORMAL;
+        return RockType.CRYSTAL;
     }
-    return chosenRock;
+
+    // Filter rock types available at the current tower height
+    const availableRockTypes = Object.values(ROCK_TYPES).filter(
+        rockConfig => towerHeight >= rockConfig.minTowerHeight
+    );
+
+    if (availableRockTypes.length === 0) {
+        return RockType.NORMAL; // Fallback
+    }
+
+    // Weight rock types based on rarity - rarer rocks at higher heights
+    const totalWeight = availableRockTypes.length;
+    const weights = availableRockTypes.map((_, index) => index + 1);
+    const totalWeightSum = weights.reduce((sum, weight) => sum + weight, 0);
+
+    // Choose a random rock type based on weights
+    let random = Math.random() * totalWeightSum;
+    let cumulativeWeight = 0;
+
+    for (let i = 0; i < availableRockTypes.length; i++) {
+        cumulativeWeight += weights[i];
+        if (random <= cumulativeWeight) {
+            return availableRockTypes[i].type;
+        }
+    }
+
+    // Fallback to the highest level rock
+    return availableRockTypes[availableRockTypes.length - 1].type;
 }
 
 /**
@@ -65,7 +81,7 @@ export function generateRock(
     towerHeight: number = 0,
     id: string = `rock-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 ): Rock {
-    // Choose rock type
+    // Choose rock type based on tower height
     const rockType = chooseRockType(towerHeight);
     const rockConfig = ROCK_TYPES[rockType];
     const health = rockConfig.health;
@@ -149,7 +165,7 @@ export function calculateResourceYield(resources: ResourceYield[], multiplier: n
     return result;
 }
 
-// New function to calculate currency yield from crystal rocks
+// Function to calculate currency yield from crystal rocks
 export function calculateCurrencyYield(resources: ResourceYield[], multiplier: number = 1): number {
     let currencyAmount = 0;
 
@@ -164,6 +180,8 @@ export function calculateCurrencyYield(resources: ResourceYield[], multiplier: n
             currencyAmount += amount * 5;
         } else if (resource.type === 'wood') {
             currencyAmount += amount * 1;
+        } else if (resource.type === 'carbonFiber') {
+            currencyAmount += amount * 10; // Carbon fiber is more valuable
         }
     });
 

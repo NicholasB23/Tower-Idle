@@ -1,9 +1,11 @@
+// src/components/MineArea.tsx
 import { useEffect, useState, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Rock, generateRock, generateRocks, calculateResourceYield, calculateCurrencyYield } from '@/game/generators/rockGenerator'
 import RockComponent from '@/components/mines/RockComponent';
 import { cn } from '@/lib/utils';
 import { RockType } from '@/types/mine.types';
+import { TowerAge } from '@/types/tower.types';
 
 const MineArea = () => {
     const [rocks, setRocks] = useState<Rock[]>([]);
@@ -49,6 +51,20 @@ const MineArea = () => {
         };
     }, [rocks.length, pickaxe.level, tower.height]);
 
+    // Get a background style based on the current tower age
+    const getBackgroundForAge = () => {
+        switch (tower.currentAge) {
+            case TowerAge.STONE:
+                return 'bg-stone-200';
+            case TowerAge.METAL:
+                return 'bg-slate-300';
+            case TowerAge.CARBON:
+                return 'bg-indigo-100';
+            default:
+                return 'bg-stone-200';
+        }
+    };
+
     const handleMineRock = (rockId: string) => {
         setRocks(prevRocks =>
             prevRocks.map(rock => {
@@ -73,7 +89,7 @@ const MineArea = () => {
                         // Handle regular rocks as before - add resources
                         const resources = calculateResourceYield(rock.resources, yieldMultiplier);
                         Object.entries(resources).forEach(([type, amount]) => {
-                            addResource(type as 'stone' | 'metal' | 'wood', amount);
+                            addResource(type as 'stone' | 'metal' | 'wood' | 'carbonFiber', amount);
                         });
                     }
 
@@ -98,7 +114,7 @@ const MineArea = () => {
     return (
         <div
             ref={mineAreaRef}
-            className={cn('flex-grow w-full bg-stone-200 rounded-md relative mb-4 min-h-[300px]')}
+            className={cn(`flex-grow w-full rounded-md relative mb-4 min-h-[300px] ${getBackgroundForAge()}`)}
             style={pickaxeCursorClass}
         >
             {rocks.map(rock => (

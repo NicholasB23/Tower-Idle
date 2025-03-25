@@ -13,7 +13,6 @@ import TowerDisplay from '@/components/TowerDisplay';
 const Game = () => {
     const [activeTab, setActiveTab] = React.useState('workers');
     const {
-        tower,
         loadFromFile,
         load: loadSave
     } = useGameStore();
@@ -29,7 +28,7 @@ const Game = () => {
             <div className="grid grid-cols-3 gap-4 h-full">
                 {/* Left panel - Tower and Game */}
                 <div className="col-span-1 space-y-4">
-                    <TowerDisplay tower={tower} />
+                    <TowerDisplay />
                 </div>
 
                 {/* Right panel - Tabs */}

@@ -1,29 +1,36 @@
+// src/lib/stores/initialStore.ts
 import { GameState, ProductionState, ResourceState } from '@/types/game.types'
 import { FarmState } from '@/types/farm.types'
-import { TowerState } from '@/types/tower.types';
+import { TowerState, TowerAge, calculateResourceCost } from '@/types/tower.types';
 import { PICKAXE_UPGRADES } from '@/types/mine.types';
 
+const initialHeight = 990;
 
 const INITIAL_TOWER_STATE: TowerState = {
-    height: 600,
-    maxHeight: 1000,
-    heightPerMinute: 10,
+    height: initialHeight,
+    maxHeight: 100000, // Maximum tower height
     floors: [],
-    maxFloors: 100
-}
+    maxFloors: 100,
+    currentAge: TowerAge.STONE,
+    buildCost: calculateResourceCost(initialHeight),
+    buildProgress: 0,
+    isBuilding: false
+};
 
 const INITIAL_RESOURCE_STATE: ResourceState = {
-    wood: 0,
-    stone: 0,
+    wood: 100,
+    stone: 100,
     metal: 0,
+    carbonFiber: 0,
     workers: 0
-}
+};
 
 const INITIAL_PRODUCTION_STATE: ProductionState = {
-    woodRate: 0,
-    stoneRate: 0,
-    metalRate: 0
-}
+    woodRate: 0.01,
+    stoneRate: 0.01,
+    metalRate: 0,
+    carbonFiberRate: 0
+};
 
 const INITIAL_FARM_STATE: FarmState = {
     tiles: Array(16).fill(null).map((_, index) => ({
@@ -42,7 +49,6 @@ const INITIAL_FARM_STATE: FarmState = {
         carrot: 0
     }
 };
-
 
 export const INITIAL_STATE: GameState = {
     points: 0,

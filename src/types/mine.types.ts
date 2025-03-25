@@ -1,3 +1,4 @@
+// src/types/mine.types.ts
 export interface PickaxeState {
     level: number;
     power: number;
@@ -5,7 +6,7 @@ export interface PickaxeState {
 }
 
 export type ResourceYield = {
-    type: 'stone' | 'metal' | 'wood';
+    type: 'stone' | 'metal' | 'wood' | 'carbonFiber';
     amount: number;
 }
 
@@ -15,7 +16,8 @@ export enum RockType {
     GRANITE = 'granite',
     CRYSTAL = 'crystal',
     GEODE = 'geode',
-    METEORITE = 'meteorite'
+    METEORITE = 'meteorite',
+    CARBON = 'carbon'
 }
 
 export interface RockTypeConfig {
@@ -25,6 +27,7 @@ export interface RockTypeConfig {
     color: string;
     fillColor: string;
     resources: ResourceYield[];
+    minTowerHeight: number; // Height at which this rock type starts appearing
 }
 
 export interface YieldUpgrade {
@@ -92,7 +95,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         fillColor: 'gray',
         resources: [
             { type: 'stone', amount: 2 }
-        ]
+        ],
+        minTowerHeight: 0
     },
     [RockType.HARD]: {
         type: RockType.HARD,
@@ -102,7 +106,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         fillColor: '#555555',
         resources: [
             { type: 'stone', amount: 4 }
-        ]
+        ],
+        minTowerHeight: 0
     },
     [RockType.GRANITE]: {
         type: RockType.GRANITE,
@@ -113,7 +118,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         resources: [
             { type: 'stone', amount: 6 },
             { type: 'metal', amount: 1 }
-        ]
+        ],
+        minTowerHeight: 500
     },
     [RockType.CRYSTAL]: {
         type: RockType.CRYSTAL,
@@ -124,7 +130,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         resources: [
             { type: 'stone', amount: 4 },
             { type: 'metal', amount: 2 }
-        ]
+        ],
+        minTowerHeight: 0
     },
     [RockType.GEODE]: {
         type: RockType.GEODE,
@@ -135,7 +142,8 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         resources: [
             { type: 'stone', amount: 3 },
             { type: 'metal', amount: 3 }
-        ]
+        ],
+        minTowerHeight: 1000
     },
     [RockType.METEORITE]: {
         type: RockType.METEORITE,
@@ -146,7 +154,20 @@ export const ROCK_TYPES: Record<RockType, RockTypeConfig> = {
         resources: [
             { type: 'stone', amount: 8 },
             { type: 'metal', amount: 5 }
-        ]
+        ],
+        minTowerHeight: 5000
+    },
+    [RockType.CARBON]: {
+        type: RockType.CARBON,
+        name: 'Carbon Deposit',
+        health: 20,
+        color: '#111111',
+        fillColor: '#0D0D0D',
+        resources: [
+            { type: 'stone', amount: 4 },
+            { type: 'carbonFiber', amount: 2 }
+        ],
+        minTowerHeight: 10000
     }
 };
 

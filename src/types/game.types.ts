@@ -30,6 +30,7 @@ export interface ResourceState {
     wood: number;
     stone: number;
     metal: number;
+    carbonFiber: number;
     workers: number;
 }
 
@@ -37,6 +38,7 @@ export interface ProductionState {
     woodRate: number;
     stoneRate: number;
     metalRate: number;
+    carbonFiberRate: number;
 }
 
 export type ResourceType = keyof ResourceState;
