@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Pickaxe, ShoppingCart, HardHat } from 'lucide-react';
+import { Pickaxe, ShoppingCart } from 'lucide-react';
 import { useGameStore } from '@/lib/store';
 import { PICKAXE_UPGRADES } from '@/types/mine.types';
 import MineYieldUpgrades from './MineYieldUpgrade';

@@ -3,7 +3,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp } from 'lucide-react';
 import { useGameStore } from '@/lib/store';
-import { YieldUpgrade } from '@/types/mine.types';
 
 const MineYieldUpgrades: React.FC = () => {
     const { miningUpgrades, points, purchaseYieldUpgrade, canPurchaseYieldUpgrade, getAvailableYieldUpgrades } = useGameStore();

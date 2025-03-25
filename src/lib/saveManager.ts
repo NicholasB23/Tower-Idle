@@ -16,17 +16,34 @@ interface SaveState extends GameState {
         stoneRate: number;
         metalRate: number;
     };
+    lastSavedAt?: number;
 }
 
 export const saveManager = {
     saveToLocal: (gameState: SaveState) => {
         try {
-            const saveData = JSON.stringify(gameState);
+            const saveData = JSON.stringify({
+                ...gameState,
+                lastSavedAt: Date.now() // Add the current timestamp
+            });
             localStorage.setItem(SAVE_KEY, saveData);
             return true;
         } catch (error) {
             console.error('Failed to save game:', error);
             return false;
+        }
+    },
+
+    getLastSaveTime: (): Date | null => {
+        try {
+            const saveData = localStorage.getItem(SAVE_KEY);
+            if (!saveData) return null;
+
+            const parsedData = JSON.parse(saveData) as SaveState;
+            return parsedData.lastSavedAt ? new Date(parsedData.lastSavedAt) : null;
+        } catch (error) {
+            console.error('Failed to get last save time:', error);
+            return null;
         }
     },
 

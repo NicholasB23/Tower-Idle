@@ -68,3 +68,132 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+
+@keyframes floatClouds {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-float {
+  animation: floatClouds 20s linear infinite;
+}
+
+.animate-float-slow {
+  animation: floatClouds 30s linear infinite;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  100% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  80% {
+    opacity: 0.3;
+  }
+
+  90%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(20px) translateX(0);
+  }
+
+  50% {
+    transform: translateY(-30px) translateX(20px);
+  }
+
+  100% {
+    transform: translateY(-70px) translateX(-10px);
+  }
+}
+
+@keyframes fadeParticle {
+  0% {
+    opacity: 0;
+  }
+
+  20%,
+  80% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Use these animation classes in your components */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: floatClouds 20s linear infinite;
+}
+
+.animate-float-slow {
+  animation: floatClouds 30s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
