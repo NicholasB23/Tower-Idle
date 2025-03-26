@@ -13,7 +13,7 @@ const MineArea = () => {
     const { addResource, addPoints, miningUpgrades, pickaxe, tower } = useGameStore();
 
     // Custom pickaxe cursor
-    const cursorUrl = 'src/assets/icons/pickaxe.svg';
+    const cursorUrl = 'pickaxe.svg';
     const pickaxeCursorClass = {
         cursor: `url("${cursorUrl}") 16 16, auto`
     };
